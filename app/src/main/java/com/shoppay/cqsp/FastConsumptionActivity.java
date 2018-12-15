@@ -103,9 +103,9 @@ public class FastConsumptionActivity extends FragmentActivity implements
 		LinearLayout.LayoutParams lParams = (LinearLayout.LayoutParams) tabBottomLine
 				.getLayoutParams();
 		DisplayMetrics dm = getResources().getDisplayMetrics();
-		lParams.width = dm.widthPixels / 2;
+		lParams.width = dm.widthPixels;
 		tabBottomLine.setLayoutParams(lParams);
-		tabWidth = dm.widthPixels / 2;
+		tabWidth = dm.widthPixels;
 		Matrix matrix = new Matrix();
 		tabBottomLine.setImageMatrix(matrix);// 设置动画初始位置
 		listFragments = new ArrayList<Fragment>();

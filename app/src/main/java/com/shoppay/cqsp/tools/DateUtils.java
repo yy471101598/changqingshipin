@@ -26,6 +26,21 @@ public class DateUtils {
                  }
              return times;
          }
+    public static String timeTodata(String time,String format) {
+        SimpleDateFormat sdr = new SimpleDateFormat(format,
+                Locale.CHINA);
+        Date date;
+        String times = null;
+        try {
+            date = sdr.parse(time);
+            long l = date.getTime();
+            String stf = String.valueOf(l);
+            times = stf.substring(0, 10);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return times;
+    }
 /**
  45.     * 获取当前时间
  46.     *
@@ -35,6 +50,10 @@ public class DateUtils {
           SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
           return sdf.format(new java.util.Date());
           }
+    public static String getCurrentTime_Today(String format) {
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        return sdf.format(new java.util.Date());
+    }
     public static String getCurrentTime(String type) {
         SimpleDateFormat sdf = new SimpleDateFormat(type);
         return sdf.format(new java.util.Date());

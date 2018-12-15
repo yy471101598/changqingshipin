@@ -17,7 +17,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.PersistentCookieStore;
 import com.loopj.android.http.RequestParams;
-import com.shoppay.cqsp.bean.YinxiaoCenter;
+import com.shoppay.cqsp.bean.YinxiaoCenterNew;
 import com.shoppay.cqsp.http.InterfaceBack;
 import com.shoppay.cqsp.tools.BluetoothUtil;
 import com.shoppay.cqsp.tools.DateHmChoseDialog;
@@ -25,6 +25,8 @@ import com.shoppay.cqsp.tools.DateUtils;
 import com.shoppay.cqsp.tools.DayinUtils;
 import com.shoppay.cqsp.tools.DialogUtil;
 import com.shoppay.cqsp.tools.LogUtils;
+import com.shoppay.cqsp.tools.NoDoubleClickListener;
+import com.shoppay.cqsp.tools.StringUtil;
 import com.shoppay.cqsp.tools.UrlTools;
 
 import org.json.JSONObject;
@@ -64,6 +66,9 @@ public class YingxiaoCenterNewActivity extends Activity {
     RelativeLayout mRlDayin;
     private Activity ac;
     private Dialog dialog;
+    private boolean isDayin = false;
+    private String dayinmsg = "";
+    private int dayinnum = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +80,28 @@ public class YingxiaoCenterNewActivity extends Activity {
         mTvTitle.setText("营销中心");
         mBossTvStarttime.setText(DateUtils.getCurrentTime("yyyy-MM-dd") + " 00:00");
         mBossTvEndtime.setText(DateUtils.getCurrentTime("yyyy-MM-dd HH:mm"));
+        isDayin = false;
         obtainBoss();
+        mRlDayin.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            protected void onNoDoubleClick(View view) {
+                if(isDayin) {
+                    if(dayinnum==0){
+                        Toast.makeText(ac,"打印份数为0",Toast.LENGTH_SHORT).show();
+                    }else {
+                        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+                        if (bluetoothAdapter.isEnabled()) {
+                            BluetoothUtil.connectBlueTooth(MyApplication.context);
+                            BluetoothUtil.sendData(DayinUtils.dayin(dayinmsg), dayinnum);
+                        } else {
+                            Toast.makeText(ac,"请打开蓝牙",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }else{
+                    Toast.makeText(ac, "营销中心数据获取失败", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
 
@@ -88,7 +114,7 @@ public class YingxiaoCenterNewActivity extends Activity {
 
         map.put("StartDate", mBossTvStarttime.getText().toString() + ":00");
         map.put("EndDate", mBossTvEndtime.getText().toString() + ":00");
-        String url = UrlTools.obtainUrl(ac, "?Source=3", "RptOverallDataGet");
+        String url = UrlTools.obtainUrl(ac, "?Source=3", "PrintRptOverallData");
         LogUtils.d("xxurl", url);
         client.post(url, map, new AsyncHttpResponseHandler() {
             @Override
@@ -100,42 +126,53 @@ public class YingxiaoCenterNewActivity extends Activity {
                     if (jso.getInt("flag") == 1) {
 //                        Toast.makeText(ac, jso.getString("msg"), Toast.LENGTH_LONG).show();
                         Gson gson = new Gson();
-                        Type listType = new TypeToken<List<YinxiaoCenter>>() {
+                        Type listType = new TypeToken<List<YinxiaoCenterNew>>() {
                         }.getType();
-                        List<YinxiaoCenter> yinxiaoCenters = gson.fromJson(jso.getString("vdata"), listType);
+                        List<YinxiaoCenterNew> yinxiaoCenters = gson.fromJson(jso.getString("vdata"), listType);
                         handlerYinxiaoMsg(yinxiaoCenters.get(0));
-
+                        isDayin = true;
                         JSONObject jsonObject = (JSONObject) jso.getJSONArray("print").get(0);
                         if (jsonObject.getInt("printNumber") == 0) {
+                            dayinnum = 0;
                         } else {
-                            BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-                            if (bluetoothAdapter.isEnabled()) {
-                                BluetoothUtil.connectBlueTooth(MyApplication.context);
-                                BluetoothUtil.sendData(DayinUtils.dayin(jsonObject.getString("printContent")), jsonObject.getInt("printNumber"));
-                            } else {
-                            }
+                            dayinnum = jsonObject.getInt("printNumber");
+                            dayinmsg = jsonObject.getString("printContent");
                         }
                     } else {
-
+                        isDayin = false;
+                        mTvAccount.setText("");
+                        mTvShop.setText("");
+                        mTvYuexf.setText("");
                         Toast.makeText(ac, jso.getString("msg"), Toast.LENGTH_SHORT).show();
                     }
                 } catch (Exception e) {
-                    Toast.makeText(ac, "会员充值失败，请重新登录", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                    isDayin = false;
+                    mTvAccount.setText("");
+                    mTvShop.setText("");
+                    mTvYuexf.setText("");
+                    Toast.makeText(ac, "营销中心数据获取失败", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                 dialog.dismiss();
-                Toast.makeText(ac, "会员充值失败，请重新登录", Toast.LENGTH_SHORT).show();
+                isDayin = false;
+                mTvAccount.setText("");
+                mTvShop.setText("");
+                mTvYuexf.setText("");
+                Toast.makeText(ac, "营销中心数据获取失败", Toast.LENGTH_SHORT).show();
             }
         });
 
 
     }
 
-    private void handlerYinxiaoMsg(YinxiaoCenter yx) {
-
+    private void handlerYinxiaoMsg(YinxiaoCenterNew yx) {
+        mTvAccount.setText(yx.UserAccount);
+        mTvShop.setText(yx.ShopName);
+        mTvYuexf.setText(StringUtil.twoNum(yx.OrderBalance));
     }
 
 
@@ -149,20 +186,8 @@ public class YingxiaoCenterNewActivity extends Activity {
                 DateHmChoseDialog.datehmChoseDialog(ac, 2, new InterfaceBack() {
                     @Override
                     public void onResponse(Object response) {
-                        mBossTvStarttime.setText(response.toString());
-                        obtainBoss();
-                    }
-
-                    @Override
-                    public void onErrorResponse(Object msg) {
-
-                    }
-                });
-                DialogUtil.dateChoseDialog(YingxiaoCenterNewActivity.this, 1, new InterfaceBack() {
-                    @Override
-                    public void onResponse(Object response) {
-                        String data = DateUtils.timeTodata((String) response);
-                        String cru = DateUtils.timeTodata(DateUtils.getCurrentTime_Today());
+                        String data = DateUtils.timeTodata((String) response + ":00", "yyyy-MM-dd HH:mm:ss");
+                        String cru = DateUtils.timeTodata(DateUtils.getCurrentTime_Today("yyyy-MM-dd HH:mm:ss"),"yyyy-MM-dd HH:mm:ss");
                         Log.d("xxTime", data + ";" + cru + ";" + DateUtils.getCurrentTime_Today() + ";" + (String) response);
                         if (Double.parseDouble(data) <= Double.parseDouble(cru)) {
                             mBossTvStarttime.setText((String) response);
@@ -174,8 +199,7 @@ public class YingxiaoCenterNewActivity extends Activity {
 
                     @Override
                     public void onErrorResponse(Object msg) {
-                        mBossTvStarttime.setText((String) msg);
-                        obtainBoss();
+
                     }
                 });
                 break;
@@ -183,22 +207,8 @@ public class YingxiaoCenterNewActivity extends Activity {
                 DateHmChoseDialog.datehmChoseDialog(ac, 2, new InterfaceBack() {
                     @Override
                     public void onResponse(Object response) {
-                        mBossTvEndtime.setText(response.toString());
-                        obtainBoss();
-                    }
-
-                    @Override
-                    public void onErrorResponse(Object msg) {
-
-                    }
-                });
-
-                DialogUtil.dateChoseDialog(YingxiaoCenterNewActivity.this, 1, new InterfaceBack() {
-                    @Override
-                    public void onResponse(Object response) {
-
-                        String data = DateUtils.timeTodata((String) response);
-                        String cru = DateUtils.timeTodata(mBossTvStarttime.getText().toString());
+                        String data = DateUtils.timeTodata((String) response + ":00", "yyyy-MM-dd HH:mm:ss");
+                        String cru = DateUtils.timeTodata(mBossTvStarttime.getText().toString() + ":00", "yyyy-MM-dd HH:mm:ss");
                         Log.d("xxTime", data + ";" + cru + ";" + DateUtils.getCurrentTime_Today() + ";" + (String) response);
                         if (Double.parseDouble(data) >= Double.parseDouble(cru)) {
                             mBossTvEndtime.setText((String) response);
@@ -210,8 +220,7 @@ public class YingxiaoCenterNewActivity extends Activity {
 
                     @Override
                     public void onErrorResponse(Object msg) {
-                        mBossTvEndtime.setText((String) msg);
-                        obtainBoss();
+
                     }
                 });
                 break;

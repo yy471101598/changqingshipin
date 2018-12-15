@@ -45,20 +45,20 @@ public class DateHmChoseDialog {
      * @param showingLocation 0：顶部 1：中间 2：底部 3：距离底部100dp 对话框的位置
      */
     public static void datehmChoseDialog(final Context context,
-                                       int showingLocation, final InterfaceBack handler) {
+                                         int showingLocation, final InterfaceBack handler) {
         final Dialog dialog;
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.dialog_datechosehm, null);
-        wl_start_year= (WheelView) view.findViewById(R.id.wl_year);
-        wl_start_month= (WheelView) view.findViewById(R.id.wl_month);
-        wl_start_day= (WheelView) view.findViewById(R.id.wl_day);
-        wl_start_h= (WheelView) view.findViewById(R.id.wl_hour);
-        wl_start_m= (WheelView) view.findViewById(R.id.wl_moth);
+        wl_start_year = (WheelView) view.findViewById(R.id.wl_year);
+        wl_start_month = (WheelView) view.findViewById(R.id.wl_month);
+        wl_start_day = (WheelView) view.findViewById(R.id.wl_day);
+        wl_start_h = (WheelView) view.findViewById(R.id.wl_hour);
+        wl_start_m = (WheelView) view.findViewById(R.id.wl_moth);
         SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         final String date = sDateFormat.format(new java.util.Date());
-        time=date;
-        RelativeLayout rl_confirm= (RelativeLayout) view.findViewById(R.id.rl_confirm);
-        RelativeLayout rl_cancel= (RelativeLayout) view.findViewById(R.id.rl_cancel);
+        time = date;
+        RelativeLayout rl_confirm = (RelativeLayout) view.findViewById(R.id.rl_confirm);
+        RelativeLayout rl_cancel = (RelativeLayout) view.findViewById(R.id.rl_cancel);
         initWheelView(context);
         dialog = new Dialog(context, R.style.DialogNotitle1);
         dialog.setCancelable(true);
@@ -97,7 +97,7 @@ public class DateHmChoseDialog {
             case 3:
                 WindowManager.LayoutParams params = window.getAttributes();
                 dialog.onWindowAttributesChanged(params);
-                params.x = screenWidth-dip2px(context,100);// 设置x坐标
+                params.x = screenWidth - dip2px(context, 100);// 设置x坐标
                 params.gravity = Gravity.TOP;
                 params.y = dip2px(context, 45);// 设置y坐标
                 Log.d("xx", params.y + "");
@@ -109,20 +109,22 @@ public class DateHmChoseDialog {
                 break;
         }
     }
+
     public static int dip2px(Context context, float dipValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dipValue * scale + 0.5f);
     }
+
     private static void initWheelView(final Context context) {
         Calendar c = Calendar.getInstance();
         curYear = c.get(Calendar.YEAR);
         curMonth = c.get(Calendar.MONTH) + 1;//通过Calendar算出的月数要+1
         curDate = c.get(Calendar.DATE);
-        curHour=c.get(Calendar.HOUR);
-        curMin=c.get(Calendar.MINUTE);
-        LogUtils.d("xxhm",curHour+";;"+curMin);
+        curHour = c.get(Calendar.HOUR_OF_DAY);
+        curMin = c.get(Calendar.MINUTE);
+        LogUtils.d("xxhm", curHour + ";;" + curMin);
 
-        NumericWheelAdapter numericWheelAdapterStart1=new NumericWheelAdapter(context,1900, 2100);
+        NumericWheelAdapter numericWheelAdapterStart1 = new NumericWheelAdapter(context, 1900, 2100);
         numericWheelAdapterStart1.setLabel(" ");
         wl_start_year.setViewAdapter(numericWheelAdapterStart1);
         numericWheelAdapterStart1.setTextColor(R.color.text_30);
@@ -134,29 +136,29 @@ public class DateHmChoseDialog {
         wl_start_year.addChangingListener(new OnWheelChangedListener() {
             @Override
             public void onChanged(WheelView wheel, int oldValue, int newValue) {
-                curYear = newValue+2000;
+                curYear = newValue + 2000;
                 initStartDayAdapter(context);
             }
         });
 
-        NumericWheelAdapter numericWheelAdapterStart2=new NumericWheelAdapter(context,1, 12, "%02d");
+        NumericWheelAdapter numericWheelAdapterStart2 = new NumericWheelAdapter(context, 1, 12, "%02d");
         numericWheelAdapterStart2.setLabel(" ");
         wl_start_month.setViewAdapter(numericWheelAdapterStart2);
         numericWheelAdapterStart2.setTextColor(R.color.text_30);
         numericWheelAdapterStart2.setTextSize(20);
         wl_start_month.setCyclic(true);
         wl_start_month.addScrollingListener(startScrollListener);
-        wl_start_month.setCurrentItem(curMonth-1);
+        wl_start_month.setCurrentItem(curMonth - 1);
         wl_start_month.addChangingListener(new OnWheelChangedListener() {
             @Override
             public void onChanged(WheelView wheel, int oldValue, int newValue) {
-                curMonth = newValue+1;
+                curMonth = newValue + 1;
                 initStartDayAdapter(context);
             }
         });
         initStartDayAdapter(context);
 
-        NumericWheelAdapter numericWheelAdapterStart4=new NumericWheelAdapter(context,0, 23, "%02d");
+        NumericWheelAdapter numericWheelAdapterStart4 = new NumericWheelAdapter(context, 0, 23, "%02d");
         numericWheelAdapterStart4.setLabel(" ");
         wl_start_h.setViewAdapter(numericWheelAdapterStart4);
         numericWheelAdapterStart4.setTextColor(R.color.text_30);
@@ -167,11 +169,11 @@ public class DateHmChoseDialog {
         wl_start_h.addChangingListener(new OnWheelChangedListener() {
             @Override
             public void onChanged(WheelView wheel, int oldValue, int newValue) {
-                LogUtils.d("xxh",newValue+";"+oldValue);
+                LogUtils.d("xxh", newValue + ";" + oldValue);
                 curHour = newValue;
             }
         });
-        NumericWheelAdapter numericWheelAdapterStart5=new NumericWheelAdapter(context,0, 59, "%02d");
+        NumericWheelAdapter numericWheelAdapterStart5 = new NumericWheelAdapter(context, 0, 59, "%02d");
         numericWheelAdapterStart5.setLabel(" ");
         wl_start_m.setViewAdapter(numericWheelAdapterStart5);
         numericWheelAdapterStart5.setTextColor(R.color.text_30);
@@ -182,52 +184,56 @@ public class DateHmChoseDialog {
         wl_start_m.addChangingListener(new OnWheelChangedListener() {
             @Override
             public void onChanged(WheelView wheel, int oldValue, int newValue) {
-                LogUtils.d("xxm",newValue+"");
+                LogUtils.d("xxm", newValue + "");
                 curMin = newValue;
             }
         });
     }
-    private static void initStartDayAdapter(Context context){
-        NumericWheelAdapter numericWheelAdapterStart3=new NumericWheelAdapter(context,1,getDay(curYear,curMonth), "%02d");
+
+    private static void initStartDayAdapter(Context context) {
+        NumericWheelAdapter numericWheelAdapterStart3 = new NumericWheelAdapter(context, 1, getDay(curYear, curMonth), "%02d");
         numericWheelAdapterStart3.setLabel(" ");
         wl_start_day.setViewAdapter(numericWheelAdapterStart3);
         numericWheelAdapterStart3.setTextColor(R.color.text_30);
         numericWheelAdapterStart3.setTextSize(20);
         wl_start_day.setCyclic(true);
         wl_start_day.addScrollingListener(startScrollListener);
-        wl_start_day.setCurrentItem(curDate-1);
+        wl_start_day.setCurrentItem(curDate - 1);
     }
+
     static OnWheelScrollListener startScrollListener = new OnWheelScrollListener() {
         @Override
         public void onScrollingStarted(WheelView wheel) {
         }
+
         @Override
         public void onScrollingFinished(WheelView wheel) {
             int n_year = wl_start_year.getCurrentItem() + 1900;//年
             int n_month = wl_start_month.getCurrentItem() + 1;//月
             int n_day = wl_start_day.getCurrentItem() + 1;//日
-            String month=String.valueOf(n_month);
-            if(n_month<10){
-                month="0"+month;
+            String month = String.valueOf(n_month);
+            if (n_month < 10) {
+                month = "0" + month;
             }
-            String day=String.valueOf(n_day);
-            if(n_day<10){
-                day="0"+day;
+            String day = String.valueOf(n_day);
+            if (n_day < 10) {
+                day = "0" + day;
             }
-            String hour=String.valueOf(curHour);
-            if(curHour<10){
-                hour="0"+curHour;
+            String hour = String.valueOf(curHour);
+            if (curHour < 10) {
+                hour = "0" + curHour;
             }
-            String min=String.valueOf(curMin);
-            if(curMin<10){
-                min="0"+curMin;
+            String min = String.valueOf(curMin);
+            if (curMin < 10) {
+                min = "0" + curMin;
             }
-            time=n_year+"-"+month+"-"+day+" "+hour+":"+min;
+            time = n_year + "-" + month + "-" + day + " " + hour + ":" + min;
         }
     };
 
     /**
      * 根据年月获得 这个月总共有几天
+     *
      * @param year
      * @param month
      * @return

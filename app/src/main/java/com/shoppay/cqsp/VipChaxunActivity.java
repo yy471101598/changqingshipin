@@ -31,7 +31,6 @@ import com.shoppay.cqsp.bean.VipInfo;
 import com.shoppay.cqsp.bean.VipInfoMsg;
 import com.shoppay.cqsp.card.ReadCardOpt;
 import com.shoppay.cqsp.card.ReadCardOptHander;
-import com.shoppay.cqsp.card.ReadCardOptTv;
 import com.shoppay.cqsp.http.InterfaceBack;
 import com.shoppay.cqsp.tools.ActivityStack;
 import com.shoppay.cqsp.tools.DialogUtil;
@@ -310,7 +309,7 @@ public class VipChaxunActivity extends Activity {
         try
         {
             if (isVipcar) {
-                new ReadCardOptTv().overReadCard();
+                new ReadCardOptHander().overReadCard();
             } else {
                 new ReadCardOpt().overReadCard();
             }

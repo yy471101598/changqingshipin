@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_toRightOf="@id/tv_bh"
-            android:gravity="center_vertical"
+            android:layout_centerVertical="true"
             android:textColor="@color/text_30"
             android:textSize="15sp"
             />

@@ -95,6 +95,7 @@
                     android:layout_alignParentBottom="true"
                     android:background="@color/viewcolor"></View>
             </RelativeLayout>
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
@@ -127,6 +128,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:background="@color/viewcolor"></View>
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="40.5dp"
@@ -154,6 +156,7 @@
                     android:textColor="@color/text_30"
                     android:textSize="15sp"
                     />
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
@@ -191,6 +194,7 @@
                     android:textColor="@color/text_30"
                     android:textSize="15sp"
                     />
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
@@ -313,6 +317,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="40.5dp"
                 android:background="@color/white"
+                android:visibility="gone"
                 >
 
                 <TextView
@@ -336,6 +341,7 @@
                     android:textColor="@color/text_30"
                     android:textSize="15sp"
                     />
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
@@ -399,10 +405,10 @@
                         android:paddingTop="3dp"
                         android:paddingRight="5dp"
                         android:paddingBottom="3dp"
-                        android:visibility="gone"
                         android:text="现金"
                         android:textColor="@drawable/cloud_recharge_txt_color_select"
-                        android:textSize="13sp"/>
+                        android:textSize="13sp"
+                        android:visibility="gone"/>
 
                     <RadioButton
                         android:id="@+id/rb_wx"
@@ -417,9 +423,9 @@
                         android:paddingRight="5dp"
                         android:paddingBottom="3dp"
                         android:text="微信"
-                        android:visibility="gone"
                         android:textColor="@drawable/cloud_recharge_txt_color_select"
-                        android:textSize="13sp"/>
+                        android:textSize="13sp"
+                        android:visibility="gone"/>
 
                     <RadioButton
                         android:id="@+id/rb_zhifubao"
@@ -432,11 +438,11 @@
                         android:paddingLeft="5dp"
                         android:paddingTop="3dp"
                         android:paddingRight="5dp"
-                        android:visibility="gone"
                         android:paddingBottom="3dp"
                         android:text="支付宝"
                         android:textColor="@drawable/cloud_recharge_txt_color_select"
-                        android:textSize="13sp"/>
+                        android:textSize="13sp"
+                        android:visibility="gone"/>
 
 
                     <RadioButton
@@ -451,10 +457,10 @@
                         android:paddingTop="3dp"
                         android:paddingRight="5dp"
                         android:paddingBottom="3dp"
-                        android:visibility="gone"
                         android:text="银联"
                         android:textColor="@drawable/cloud_recharge_txt_color_select"
-                        android:textSize="13sp"/>
+                        android:textSize="13sp"
+                        android:visibility="gone"/>
 
                     <RadioButton
                         android:id="@+id/rb_qita"
@@ -468,10 +474,10 @@
                         android:paddingTop="3dp"
                         android:paddingRight="5dp"
                         android:paddingBottom="3dp"
-                        android:visibility="gone"
                         android:text="其他支付"
                         android:textColor="@drawable/cloud_recharge_txt_color_select"
-                        android:textSize="13sp"/>
+                        android:textSize="13sp"
+                        android:visibility="gone"/>
                 </RadioGroup>
 
             </RelativeLayout>
@@ -751,6 +757,7 @@
                     android:textColor="@color/text_30"
                     android:textSize="15sp"
                     />
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
@@ -759,13 +766,12 @@
             </RelativeLayout>
 
 
-
             <RelativeLayout
                 android:id="@+id/vip_rl_jiesuan"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="100dp"
                 android:layout_marginRight="10dp"
                 android:background="@drawable/kuang_red_red"
                 >
